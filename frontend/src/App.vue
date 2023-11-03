@@ -1,8 +1,24 @@
 <template>
   <div class="app">
     <v-app>
-      <header-component><main-page/></header-component>
-      <!--<footer-component/>-->
+    	<v-app-bar elevation="0"
+                   color="#FA5FA2"
+                   prominent>
+			<div class="d-flex align-center">
+				<v-icon size="50" class="mr-3">mdi-poll</v-icon>
+				<div class="text-h4">Сводная таблица анализа данных</div>
+			</div>
+		</v-app-bar>
+		<v-main>
+			<main-page/>
+		</v-main>
+		<v-footer color="#FA5FA2">
+		    <v-row justify="center" no-gutters>
+		      <v-col class="text-center mt-4" cols="12">
+		        2023 — <strong>MicroPyrziky</strong>
+		      </v-col>
+		    </v-row>
+		  </v-footer>
     </v-app>
   </div>
 </template>
