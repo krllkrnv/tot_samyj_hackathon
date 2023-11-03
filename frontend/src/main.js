@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import store from './vuex/index.js'
+import './axios.js'
 // Vuetify
 
 import '@mdi/font/css/materialdesignicons.css'

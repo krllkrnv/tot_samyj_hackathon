@@ -5,8 +5,7 @@
         <v-app-bar elevation="0"
                    color="#FA5FA2"
                    prominent
-        >          <v-spacer></v-spacer>
-
+        >
           <v-toolbar-title>Сводная таблицы анализа данных</v-toolbar-title>
 
           <v-spacer></v-spacer>
@@ -17,7 +16,7 @@
 
 
         <v-main>
-          <v-app><slot></slot></v-app>
+          <v-app class="ma-5 pa-5"><slot ></slot></v-app>
         </v-main>
       </v-layout>
     </v-card>
