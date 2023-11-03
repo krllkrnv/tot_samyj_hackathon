@@ -2,7 +2,7 @@
   <div class="app">
     <v-app>
       <header-component><main-page/></header-component>
-      <footer-component/>
+      <!--<footer-component/>-->
     </v-app>
   </div>
 </template>
