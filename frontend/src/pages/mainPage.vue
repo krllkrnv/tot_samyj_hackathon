@@ -1,13 +1,7 @@
 <template>
-<<<<<<< Updated upstream
-  <col-metrics/>
-  <row-metrics/>
-=======
   <meta-data/>
   <col-measure/>
   <row-measure/>
-
->>>>>>> Stashed changes
   <v-select
       v-model="rowsInPage"
       :items="[10, 20, 50, 100, 200]"
