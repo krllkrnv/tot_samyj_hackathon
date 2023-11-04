@@ -1,6 +1,13 @@
 <template>
+<<<<<<< Updated upstream
   <col-metrics/>
   <row-metrics/>
+=======
+  <meta-data/>
+  <col-measure/>
+  <row-measure/>
+
+>>>>>>> Stashed changes
   <v-select
       v-model="rowsInPage"
       :items="[10, 20, 50, 100, 200]"
@@ -88,12 +95,18 @@
 
 <script>
 import axios from 'axios'
-import colMetrics from "../components/colMetrics.vue";
-import rowMetrics from "../components/rowMetrics.vue";
+import colMetrics from "../components/colMeasure.vue";
+import rowMetrics from "../components/rowMeasure.vue";
+import metaData from "../components/metaData.vue";
+import RowMeasure from "../components/rowMeasure.vue";
+import ColMeasure from "../components/colMeasure.vue";
+import dialogWindow from "../components/dialogWindow.vue";
 
 export default {
   components: {
-    colMetrics, rowMetrics
+    ColMeasure,
+    RowMeasure,
+    colMetrics, rowMetrics, metaData, dialogWindow
   },
   created() {
     this.getMetadata();
@@ -120,7 +133,8 @@ export default {
           }
         })
         this.table_data = response.data;
-        //console.log(this.table_data);
+        console.log(this.table_data)
+        this.$store.commit('SET_META_DATA', this.table_data.data.fields)
       } catch {
 
       }
@@ -132,7 +146,7 @@ export default {
             'Content-Type': 'application/json'
           }
         })
-        console.log(response.data);
+        //console.log(response.data);
         this.OPAL_data = response.data;
       } catch {
 
@@ -174,20 +188,8 @@ export default {
     returnCubeRequest(from = this.from, count = this.count) {
       return {
         "columnFields": [],
-        "rowFields": [
-          {
-            "fieldId": 15,
-            "fieldType": "REPORT_FIELD"
-          }
-        ],
+        "rowFields": this.$store.getters.ROW_MEASURE,
         "metrics": [
-          {
-            "field": {
-              "fieldId": 19,
-              "fieldType": "REPORT_FIELD"
-            },
-            "aggregationType": "SUM"
-          }
         ],
         "columnsInterval": {
           "from": 0,
@@ -222,6 +224,12 @@ export default {
   watch: {
     rowsInPage() {
       this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage)
+    },
+    '$store.getters.ROW_MEASURE': {
+      handler() {
+        this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage);
+      },
+      deep: true
     }
   },
 
