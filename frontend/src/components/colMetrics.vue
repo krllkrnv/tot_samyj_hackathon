@@ -6,7 +6,12 @@
 
 <script>
 export default {
-
+props: {
+  metaData: {
+    type: Object,
+    required: true
+  }
+}
 }
 </script>
 
