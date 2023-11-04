@@ -1,10 +1,12 @@
 <template>
   <div>
-    <v-card>Метрики по строкам</v-card>
+    <v-card>Измерения по столбцам</v-card>
   </div>
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
 
 }
