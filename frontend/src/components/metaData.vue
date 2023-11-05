@@ -11,8 +11,10 @@
       <v-card variant="text" class="mb-1" >
 
 
-            <v-card max-width="500" @click="pickedElement = elem; dialog = !dialog" class="v-card-element" width="100%" variant="tonal">
-              {{elem}}
+            <v-card
+                height="35"
+                max-width="500" @click="pickedElement = elem; dialog = !dialog" class="v-card-element ma-2 pa-2" width="100%" variant="tonal">
+              {{elem.name}}
             </v-card>
 
 

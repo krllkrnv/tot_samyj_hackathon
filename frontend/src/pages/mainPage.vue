@@ -1,8 +1,10 @@
 <template>
+  {{returnCubeRequest()}}
   <meta-data/>
   <col-measure/>
   <row-measure/>
   <metrics-list/>
+  <filters-list/>
   <v-select
       v-model="rowsInPage"
       :items="[10, 20, 50, 100, 200]"
@@ -41,6 +43,8 @@
           icon="mdi-arrow-collapse-right"
       />
     </v-btn>
+    <v-btn @click="transposeTable()">Транспонировать таблицу</v-btn>
+
   </div>
   <v-table v-if="table_data && OPAL_data">
     <thead>
@@ -64,7 +68,7 @@
         <th>{{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}</th>
       </template>
       <template v-for="columnValue in OPAL_data.data.columnValues">
-      	<template v-for="headerCubeRequest in returnCubeRequest().metrics">
+        <template v-for="headerCubeRequest in returnCubeRequest().metrics">
           <th>{{ table_data.data.fields.find(item => item.id === headerCubeRequest.field.fieldId).name }}
             {{ headerCubeRequest.aggregationType }}
           </th>
@@ -99,12 +103,13 @@ import RowMeasure from "../components/rowMeasure.vue";
 import metaData from "../components/metaData.vue";
 import dialogWindow from "../components/dialogWindow.vue";
 import metricsList from "../components/metricsList.vue";
+import filtersList from "../components/filtersList.vue";
 
 export default {
   components: {
     ColMeasure,
     RowMeasure,
-    colMetrics, rowMetrics, metaData, dialogWindow, metricsList
+    colMetrics, rowMetrics, metaData, dialogWindow, metricsList, filtersList
   },
   created() {
     this.getMetadata();
@@ -205,11 +210,16 @@ export default {
         },
         "metricFilterGroup": {
           "childGroups": [],
-          "filters": [],
+          "filters": this.$store.getters.FILTERS_LIST,
           "invertResult": false,
           "operationType": "AND"
         }
       }
+    },
+    transposeTable() {
+      let bufferVariable = this.$store.getters.COl_MEASURE
+      this.$store.commit('SET_COL_MEASURES', this.$store.getters.ROW_MEASURE)
+      this.$store.commit('SET_ROW_MEASURES', bufferVariable)
     }
   },
   computed: {
@@ -263,7 +273,7 @@ export default {
   padding: 0;
   table-layout: fixed;
 }
- th, td {
+th, td {
   border: 1px solid rgba(121, 77, 77, 0.81);
 }
 

@@ -30,7 +30,7 @@ props: {
 },
   data(){
   return{
-    selectOptions: ['Измерение по столбцам', 'Измерение по строкам', 'Метрика', 'Кто прочитал тот лошпед'],
+    selectOptions: ['Измерение по столбцам', 'Измерение по строкам', 'Метрика'],
     metricOption: ['COUNT', 'COUNT_DISTINCT', 'SUM', 'MAX', 'MIN', 'AVG'],
     selectedOption: null,
     selectedMetricOption: null
