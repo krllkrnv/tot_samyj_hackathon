@@ -30,7 +30,7 @@
               metricId: metrics.findIndex(item => item.field.fieldId === pickedElement.field.fieldId),
               rounding: 0,
               values: [filterValue]
-            }); console.log(this.$store.getters.FILTERS_LIST)"
+            }); this.showDialog = !this.showDialog"
                     v-if="selectedOption">
                   Подтвердить
                 </v-btn>
