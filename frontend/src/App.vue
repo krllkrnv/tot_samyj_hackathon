@@ -12,7 +12,7 @@
 		<v-main>
 			<main-page/>
 		</v-main>
-		<v-footer color="#FA5FA2">
+		<v-footer :app="!(this.$store.getters.COl_MEASURE.length || this.$store.getters.ROW_MEASURE.length)" height="64" color="#FA5FA2">
 		    <v-row justify="center" no-gutters>
 		      <v-col class="text-center mt-4" cols="12">
 		        2023 — <strong>MicroPyrziky</strong>
