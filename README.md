@@ -1,4 +1,4 @@
-# default
+## Run run.bat in magnit-hackathon-2020 folder
 
 ## Project setup
 
