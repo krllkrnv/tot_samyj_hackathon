@@ -1,5 +1,4 @@
 <template>
-  {{returnCubeRequest()}}
   <meta-data/>
   <col-measure/>
   <row-measure/>
@@ -53,7 +52,7 @@
     <v-btn @click="transposeTable()">Транспонировать таблицу</v-btn>
 
   </div>
-  <v-table v-if="table_data && OPAL_data">
+  <v-table class="table" v-if="table_data && OPAL_data">
     <thead>
     <tr>
       <!-- Сам доволен, что до такого лаконичного решения допер.
@@ -64,19 +63,19 @@
       </template>
 
       <template v-for="headerCubeRequest in returnCubeRequest().columnFields">
-        <th>{{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}</th>
+        <th class="header-2">{{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}</th>
         <template v-for="columnValue in OPAL_data.data.columnValues">
-          <th :colspan="returnCubeRequest().metrics.length">{{ columnValue[0] }}</th>
+          <th :colspan="returnCubeRequest().metrics.length" class="header-1">{{ columnValue[0] }}</th>
         </template>
       </template>
     </tr>
     <tr>
       <template v-for="headerCubeRequest in returnCubeRequest().rowFields">
-        <th>{{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}</th>
+        <th class="header-2">{{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}</th>
       </template>
       <template v-for="columnValue in OPAL_data.data.columnValues">
         <template v-for="headerCubeRequest in returnCubeRequest().metrics">
-          <th>{{ table_data.data.fields.find(item => item.id === headerCubeRequest.field.fieldId).name }}
+          <th class="header-2">{{ table_data.data.fields.find(item => item.id === headerCubeRequest.field.fieldId).name }}
             {{ headerCubeRequest.aggregationType }}
           </th>
         </template>
@@ -85,13 +84,13 @@
     <template v-for="(rowValue, index) in OPAL_data.data.rowValues">
       <tr>
         <template v-for="n in rowValue.length">
-          <th>{{ rowValue[n - 1] }}</th>
+          <th class="header-1">{{ rowValue[n - 1] }}</th>
         </template>
 
         <template v-if="OPAL_data.data.metricValues">
           <template v-for="n in OPAL_data.data.metricValues.length">
             <template v-for="elem in OPAL_data.data.metricValues[n-1].values">
-              <th>{{ elem[index] }}</th>
+              <th class="table-elem">{{ elem[index] }}</th>
             </template>
           </template>
         </template>
@@ -292,7 +291,33 @@ export default {
   table-layout: fixed;
 }
 th, td {
-  border: 1px solid rgba(121, 77, 77, 0.81);
+  border: 1px solid #FA5FA2;
 }
 
+.header-2 {
+	background-color: #FDB5D4;
+	&:hover{
+		background-color: #FC9AC5;
+	};
+}
+
+.header-1{
+	background-color: #FB86B9;
+	&:hover{
+		background-color: #FA62A5;
+	};
+}
+
+.table-elem{
+	background-color: #FEDAEA;
+	&:hover{
+		background-color: #FCC8E0;
+	};
+}
+
+.table{
+	margin: 10px;
+	border-radius: 10px;
+	border: 3px solid #FA5FA2;
+}
 </style>

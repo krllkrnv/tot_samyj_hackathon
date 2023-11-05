@@ -62,6 +62,7 @@ props: {
             "aggregationType": this.selectedMetricOption
           })
     }
+    this.$emit('close');
   }
   }
 }

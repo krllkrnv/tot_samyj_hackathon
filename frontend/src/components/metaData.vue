@@ -1,25 +1,18 @@
 <template>
-  Метаданные:
   <v-dialog
       v-model="dialog"
       width="auto"
   ><dialog-window
   :meta-element="pickedElement"
+  @close="dialog = !dialog"
   /></v-dialog>
-  <div class="pa-5 ">
-    <template v-for="(elem, index) in metaData">
-      <v-card variant="text" class="mb-1" >
-
-
-            <v-card
-                height="35"
-                max-width="500" @click="pickedElement = elem; dialog = !dialog" class="v-card-element ma-2 pa-2" width="100%" variant="tonal">
-              {{elem.name}}
-            </v-card>
-
-
+  <div class="pa-5 item-list">
+      <v-card
+        v-for="(elem, index) in metaData"
+        height="100"
+        width="200" @click="pickedElement = elem; dialog = !dialog" class="v-card-element ma-2 pa-2" variant="tonal">
+        {{elem.name}}
       </v-card>
-    </template>
   </div>
 </template>
 
@@ -69,6 +62,18 @@ export default {
 
 .main-table th {
   background-color: #f2f2f2;
+}
+
+.item-list{
+  display: flex;
+  flex-wrap: wrap;
+  .v-card{
+    background-color: #FA5FA2;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    vertical-align: middle;
+  }
 }
 
 @media (max-width: 600px) {
