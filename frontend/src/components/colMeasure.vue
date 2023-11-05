@@ -1,15 +1,14 @@
 <template>
   <v-card variant="text">
     <v-card-title>Измерения по столбцам    <v-icon icon="mdi mdi-land-rows-vertical"></v-icon></v-card-title>
-    <v-row class="pa-2">
-      <v-col v-for="(elem, index) in colData"
-              :key="index" cols="2" sm="6" md="4" lg="3">
-        <v-card class="v-card-element ma-2 pa-2 rounded-lg" elevation="1" variant="tonal">
+    <v-row class="pa-5">
+      <v-card v-for="(elem, index) in colData"
+              class="v-card-element ma-2 pa-2 rounded-lg" elevation="1" variant="tonal">
           <v-card-title>{{metaData.find(item => item.id === elem.fieldId).name}}</v-card-title>
           <v-card-actions>
             <v-btn @click="this.$store.commit('DELETE_COL_MEASURE', elem.fieldId)" color="error" variant="tonal">Удалить</v-btn>
-          </v-card-actions></v-card>
-      </v-col>
+          </v-card-actions>
+      </v-card>
     </v-row>
   </v-card>
 </template>

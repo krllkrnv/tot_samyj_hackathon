@@ -1,14 +1,11 @@
 <template>
   <v-card variant="text">
     <v-card-title>Метрики    <v-icon icon="mdi mdi-table-large"></v-icon></v-card-title>
-    <v-row class="pa-2">
-      <v-col v-for="(elem, index) in metrics"
-             :key="index" cols="2" sm="6" md="4" lg="3"
-
+    <v-row class="pa-5">
+      <v-card v-for="(elem, index) in metrics"
+              class="v-card-element ma-2 pa-2 rounded-lg" elevation="1" variant="tonal"
       >
-        <v-card class="v-card-element ma-2 pa-2 rounded-lg" elevation="1"  variant="tonal">
           <v-card-title>{{metaData.find(item => item.id === elem.field.fieldId).name}} {{elem.aggregationType}}</v-card-title>
-
           <v-card-actions>
             <v-dialog
                 v-model="showDialog">
@@ -46,7 +43,6 @@
             >Добавить фильтр</v-btn>
           </v-card-actions>
         </v-card>
-      </v-col>
     </v-row>
   </v-card>
 </template>

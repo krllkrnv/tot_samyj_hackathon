@@ -3,16 +3,14 @@
     <v-card-title>
       Фильтры    <v-icon icon="mdi mdi-filter"></v-icon>
     </v-card-title>
-      <v-row class="pa-2">
-        <v-col v-for="(elem, index) in filters_list"
-               :key="index" cols="2" sm="6" md="4" lg="3"
+      <v-row class="pa-5">
+        <v-card v-for="(elem, index) in filters_list"
+                class="v-card-element ma-2 pa-2 rounded-lg" elevation="1" variant="tonal"
         >
-          <v-card class="v-card-element ma-2 pa-2 rounded-lg" elevation="1"  variant="tonal">
             <v-card-title> {{metaData.find(item => item.id === metrics[elem.metricId].field.fieldId).name}} <br> {{elem.filterType}}: {{elem.values[0]}}</v-card-title>
             <v-card-actions>
               <v-btn @click="this.$store.commit('DELETE_FILTER', elem.metricId)" color="error" variant="tonal">Удалить</v-btn></v-card-actions>
-          </v-card>
-        </v-col>
+        </v-card>
       </v-row>
   </v-card>
 </template>
