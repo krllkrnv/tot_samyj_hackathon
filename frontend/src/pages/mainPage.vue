@@ -55,7 +55,7 @@
       <template v-for="headerCubeRequest in returnCubeRequest().columnFields">
         <th>{{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}</th>
         <template v-for="columnValue in OPAL_data.data.columnValues">
-          <th>{{ columnValue[0] }}</th>
+          <th :colspan="returnCubeRequest().metrics.length">{{ columnValue[0] }}</th>
         </template>
       </template>
     </tr>
@@ -63,8 +63,8 @@
       <template v-for="headerCubeRequest in returnCubeRequest().rowFields">
         <th>{{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}</th>
       </template>
-      <template v-for="headerCubeRequest in returnCubeRequest().metrics">
-        <template v-for="columnValue in OPAL_data.data.columnValues">
+      <template v-for="columnValue in OPAL_data.data.columnValues">
+      	<template v-for="headerCubeRequest in returnCubeRequest().metrics">
           <th>{{ table_data.data.fields.find(item => item.id === headerCubeRequest.field.fieldId).name }}
             {{ headerCubeRequest.aggregationType }}
           </th>
