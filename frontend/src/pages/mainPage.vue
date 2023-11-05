@@ -12,6 +12,13 @@
       hide-details="true"
       label="Строк на странице"
       variant="underlined"/>
+  <v-select
+      v-model="columnsInPage"
+      :items="[1, 2, 5, 10, 20]"
+      class="select-rows-count"
+      hide-details="true"
+      label="Столбцов на странице"
+      variant="underlined"/>
   <h3>Страница:
     <input
         v-model="currentPageNumber"
@@ -19,28 +26,28 @@
         class="table-toolbar__input"
         min="1"
         type="number"
-        @change="getCube((currentPageNumber - 1) * rowsInPage, rowsInPage)"/>
+        @change="getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.columnsInPage, this.columnsInPage)"/>
     из {{ pageCount }}
   </h3>
   <div class="table-toolbar">
-    <v-btn class="table-toolbar__btn" @click="firstPage">
-      <v-icon
-          icon="mdi-arrow-collapse-left"
-      />
-    </v-btn>
-    <v-btn class="table-toolbar__btn" @click="prevPage">
+    <v-btn class="table-toolbar__btn" @click="prevColPage">
       <v-icon
           icon="mdi-menu-left-outline"
       />
     </v-btn>
-    <v-btn class="table-toolbar__btn" @click="nextPage">
+    <v-btn class="table-toolbar__btn" @click="prevPage">
       <v-icon
-          icon="mdi-menu-right-outline"
+          icon="mdi-menu-up-outline"
       />
     </v-btn>
-    <v-btn class="table-toolbar__btn" @click="lastPage">
+    <v-btn class="table-toolbar__btn" @click="nextPage">
       <v-icon
-          icon="mdi-arrow-collapse-right"
+          icon="mdi-menu-down-outline"
+      />
+    </v-btn>
+    <v-btn class="table-toolbar__btn" @click="nextColPage">
+      <v-icon
+          icon="mdi-menu-right-outline"
       />
     </v-btn>
     <v-btn @click="transposeTable()">Транспонировать таблицу</v-btn>
@@ -115,16 +122,20 @@ export default {
     this.getMetadata();
   },
   mounted() {
-    this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage);
+    this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.columnsInPage, this.columnsInPage);
   },
   data() {
     return {
       table_data: null,
       OPAL_data: null,
       rowsInPage: 20,
+      columnsInPage: 5,
       currentPageNumber: 1,
-      from: 0, // вынес в data для удобства (не помню уже какого удобства, короче потом можно в пропсы кинуть)
-      count: 0,
+      currentPageColNumber: 1,
+      from_rows: 0, // вынес в data для удобства (не помню уже какого удобства, короче потом можно в пропсы кинуть)
+      count_rows: 20,
+      from_columns: 0,
+      count_columns: 5,
     }
   },
   methods: {
@@ -142,9 +153,9 @@ export default {
 
       }
     },
-    async getCube(from, count) {
+    async getCube(from_rows, count_rows, from_columns, count_columns) {
       try { // returnCubeRequest - возвращает запрос с from, count
-        const response = await axios.post('/api/v1/olap/get-cube', this.returnCubeRequest(from, count), {
+        const response = await axios.post('/api/v1/olap/get-cube', this.returnCubeRequest(from_rows, count_rows, from_columns, count_columns), {
           headers: {
             'Content-Type': 'application/json'
           }
@@ -155,52 +166,52 @@ export default {
 
       }
     },
+    prevColPage(){
+    	if (this.currentPageColNumber > 1) {
+        this.currentPageColNumber--;
+        this.from_columns = (this.currentPageColNumber - 1) * this.columnsInPage;
+        this.count_columns = this.columnsInPage;
+        this.getCube();
+      }
+    },
     prevPage() {
       if (this.currentPageNumber > 1) {
         this.currentPageNumber--;
-        this.from = (this.currentPageNumber - 1) * this.rowsInPage;
-        this.count = this.rowsInPage
+        this.from_rows = (this.currentPageNumber - 1) * this.rowsInPage;
+        this.count_rows = this.rowsInPage
         this.getCube();
       }
     },
     nextPage() {
       if (this.currentPageNumber < this.pageCount) {
         this.currentPageNumber++;
-        this.from = (this.currentPageNumber - 1) * this.rowsInPage;
-        this.count = this.rowsInPage
+        this.from_rows = (this.currentPageNumber - 1) * this.rowsInPage;
+        this.count_rows = this.rowsInPage
         this.getCube();
       }
     },
-    firstPage() {
-      if (this.currentPageNumber !== 1) {
-        this.currentPageNumber = 1;
-        this.from = 0;
-        this.count = this.rowsInPage
-        this.getCube();
-      }
-    },
-    lastPage() {
-      if (this.currentPageNumber !== this.pageCount) {
-        this.currentPageNumber = this.pageCount;
-        this.from = (this.currentPageNumber - 1) * this.rowsInPage
-        this.count = this.rowsInPage
+    nextColPage() {
+      if (this.currentPageColNumber < Math.ceil(this.OPAL_data.data.totalColumns / this.columnsInPage)) {
+        this.currentPageColNumber++;
+        this.from_columns = (this.currentPageColNumber - 1) * this.columnsInPage;
+        this.count_columns = this.columnsInPage
         this.getCube();
       }
     },
     // Передаем из data значения в качестве параметров по умолчанию
-    returnCubeRequest(from = this.from, count = this.count) {
+    returnCubeRequest(from_rows = this.from_rows, count_rows = this.count_rows, from_columms = this.from_columns, count_columns = this.count_columns) {
       return {
         "jobId": 85,
         "columnFields": this.$store.getters.COl_MEASURE,
         "rowFields": this.$store.getters.ROW_MEASURE,
         "metrics": this.$store.getters.METRICS,
         "columnsInterval": {
-          "from": 0,
-          "count": 300
+          "from": from_columms,
+          "count": count_columns
         },
         "rowsInterval": {
-          "from": from,
-          "count": count
+          "from": from_rows,
+          "count": count_rows
         },
         "filterGroup": {
           "childGroups": [],
@@ -224,18 +235,23 @@ export default {
   },
   computed: {
     pageCount() {
-      if (this.table_data) {
-        return Math.ceil(this.table_data.data.totalRows / this.rowsInPage);
+      if (this.OPAL_data) {
+        return Math.ceil(this.OPAL_data.data.totalRows / this.rowsInPage);
       }
     }
   },
   watch: {
     rowsInPage() {
-      this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage)
+    	this.currentPageNumber = 1;
+      this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
+    },
+    columnsInPage(){
+    	this.currentPageColNumber = 1;
+    	this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
     },
     '$store.getters.ROW_MEASURE': {
       handler() {
-        this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage);
+        this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
       },
       deep: true
     }
@@ -264,7 +280,9 @@ export default {
 }
 
 .select-rows-count {
-  width: 100px;
+	margin: 10px;
+	display: inline-block;
+  width: 150px;
 }
 .v-table {
   border: 1px solid #ccc;
