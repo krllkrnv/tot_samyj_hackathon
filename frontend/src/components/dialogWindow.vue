@@ -12,6 +12,10 @@
           :items="selectOptions"
       v-model="selectedOption"
       ></v-select>
+      <v-spacer></v-spacer>
+      <v-select v-if="selectedOption === 'Метрика'"
+      :items="metricOption"
+      v-model="selectedMetricOption"></v-select>
     </v-card-actions>
     <v-btn @click="addElement">Подтвердить</v-btn>
   </v-card>
@@ -26,8 +30,10 @@ props: {
 },
   data(){
   return{
-    selectOptions: ['Измерение по строкам', 'Измерение по столбцам', 'Метрика по строкам', 'Метрика по столбцам'],
-    selectedOption: null
+    selectOptions: ['Измерение по столбцам', 'Измерение по строкам', 'Метрика', 'Кто прочитал тот лошпед'],
+    metricOption: ['COUNT', 'COUNT_DISTINCT', 'SUM', 'MAX', 'MIN', 'AVG'],
+    selectedOption: null,
+    selectedMetricOption: null
   }
   },
   methods: {
@@ -37,6 +43,23 @@ props: {
           {
             fieldId: this.metaElement.id,
             fieldType: 'REPORT_FIELD'
+          })
+    }
+    if (this.selectedOption === 'Измерение по столбцам') {
+      this.$store.commit('ADD_COL_MEASURE',
+          {
+            fieldId: this.metaElement.id,
+            fieldType: 'REPORT_FIELD'
+          })
+    }
+    if (this.selectedOption === 'Метрика') {
+      this.$store.commit('ADD_METRIC',
+          {
+            "field": {
+              "fieldId": this.metaElement.id,
+              "fieldType": "REPORT_FIELD"
+            },
+            "aggregationType": this.selectedMetricOption
           })
     }
   }

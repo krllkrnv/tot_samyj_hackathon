@@ -50,5 +50,32 @@ export default {
 }
 .v-card-element:hover{
   transform: scale(1.05)
+}.main-table {
+   overflow-x: auto;
+ }
+
+.main-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.main-table th, .main-table td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.main-table th {
+  background-color: #f2f2f2;
+}
+
+@media (max-width: 600px) {
+  .main-table table {
+    width: 100%;
+  }
+
+  .main-table th, .main-table td {
+    white-space: nowrap;
+  }
 }
 </style>
