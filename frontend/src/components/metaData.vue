@@ -1,26 +1,17 @@
 <template>
-  Метаданные:
-  <v-dialog
-      v-model="dialog"
-      width="auto"
-  ><dialog-window
-  :meta-element="pickedElement"
-  /></v-dialog>
-  <div class="pa-5 ">
-    <template v-for="(elem, index) in metaData">
-      <v-card variant="text" class="mb-1" >
-
-
-            <v-card
-                height="35"
-                max-width="500" @click="pickedElement = elem; dialog = !dialog" class="v-card-element ma-2 pa-2" width="100%" variant="tonal">
-              {{elem.name}}
-            </v-card>
-
-
-      </v-card>
-    </template>
-  </div>
+  <v-card variant="text">
+    <v-card-title>Метаданные</v-card-title>
+    <v-dialog v-model="dialog" width="auto">
+      <dialog-window :meta-element="pickedElement" />
+    </v-dialog>
+    <v-row class="pa-2">
+      <v-col v-for="(elem, index) in metaData" :key="index" cols="2" sm="6" md="4" lg="3">
+          <v-card  @click="pickedElement = elem; dialog = !dialog" class="v-card-element ma-2 pa-2 rounded-lg" elevation="1"  variant="tonal">
+            <v-card-title>{{ elem.name }}</v-card-title>
+          </v-card>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>

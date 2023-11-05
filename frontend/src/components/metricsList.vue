@@ -1,48 +1,53 @@
 <template>
-  <v-card variant="outlined">Метрики
-    <v-card v-for="elem in metrics"
-            class="v-card-element ma-5" width="100%" variant="tonal"
+  <v-card variant="text">
+    <v-card-title>Метрики    <v-icon icon="mdi mdi-table-large"></v-icon></v-card-title>
+    <v-row class="pa-2">
+      <v-col v-for="(elem, index) in metrics"
+             :key="index" cols="2" sm="6" md="4" lg="3"
 
-    >
-      <v-card-title>{{metaData.find(item => item.id === elem.field.fieldId).name}} {{elem.aggregationType}}</v-card-title>
+      >
+        <v-card class="v-card-element ma-2 pa-2 rounded-lg" elevation="1"  variant="tonal">
+          <v-card-title>{{metaData.find(item => item.id === elem.field.fieldId).name}} {{elem.aggregationType}}</v-card-title>
 
-      <v-card-actions>
-        <v-dialog
-            v-model="showDialog">
-          <v-card width="500" class="align-self-center">
-            <v-card-title class="text-center">Добавление фильтра</v-card-title>
-            <v-select
-                label="Выберите фильтр"
-                :items="filterOption"
-                v-model="selectedOption">
-            </v-select>
-            <v-text-field
-                v-if="selectedOption"
-                v-model="filterValue"
-                hide-details
-                label="Введите значение"
-                type="number"
-            />
-            <v-btn
-                @click="this.$store.commit('ADD_FILTER', {
+          <v-card-actions>
+            <v-dialog
+                v-model="showDialog">
+              <v-card width="500" class="align-self-center">
+                <v-card-title class="text-center">Добавление фильтра</v-card-title>
+                <v-select
+                    label="Выберите фильтр"
+                    :items="filterOption"
+                    v-model="selectedOption">
+                </v-select>
+                <v-text-field
+                    v-if="selectedOption"
+                    v-model="filterValue"
+                    hide-details
+                    label="Введите значение"
+                    type="number"
+                />
+                <v-btn
+                    @click="this.$store.commit('ADD_FILTER', {
               filterType: selectedOption,
               invertResult: false,
               metricId: metrics.findIndex(item => item.field.fieldId === pickedElement.field.fieldId),
               rounding: 0,
               values: [filterValue]
             }); console.log(this.$store.getters.FILTERS_LIST)"
-                v-if="selectedOption">
-              Подтвердить
-            </v-btn>
-          </v-card>
-        </v-dialog>
-        <v-btn @click="this.$store.commit('DELETE_METRIC', elem.field.fieldId)" color="error" variant="tonal">Удалить</v-btn>
-        <v-btn
-        @click="showDialog = !showDialog; pickedElement = elem; console.log(pickedElement)"
+                    v-if="selectedOption">
+                  Подтвердить
+                </v-btn>
+              </v-card>
+            </v-dialog>
+            <v-btn @click="this.$store.commit('DELETE_METRIC', elem.field.fieldId)" color="error" variant="tonal">Удалить</v-btn>
+            <v-btn
+                @click="showDialog = !showDialog; pickedElement = elem; console.log(pickedElement)"
 
-        >Добавить фильтр</v-btn>
-      </v-card-actions>
-    </v-card>
+            >Добавить фильтр</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 
@@ -77,5 +82,10 @@ computed: {
 </script>
 
 <style scoped>
-
+.v-card-element{
+  transition: transform 0.3s ease-in-out;
+}
+.v-card-element:hover{
+  transform: scale(1.05)
+}
 </style>

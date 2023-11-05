@@ -26,10 +26,9 @@
 <script>
 import mainPage from "./pages/mainPage.vue";
 import FooterComponent from "./components/footerComponent.vue";
-import headerComponent from "./components/headerComponent.vue";
 export default {
   name: 'App',
-  components: {headerComponent, FooterComponent, mainPage},
+  components: { FooterComponent, mainPage},
 
 }
 </script>

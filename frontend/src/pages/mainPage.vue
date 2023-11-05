@@ -1,10 +1,10 @@
 <template>
-  {{returnCubeRequest()}}
   <meta-data/>
   <col-measure/>
   <row-measure/>
   <metrics-list/>
   <filters-list/>
+<<<<<<< Updated upstream
   <v-select
       v-model="rowsInPage"
       :items="[10, 20, 50, 100, 200]"
@@ -51,54 +51,104 @@
       />
     </v-btn>
     <v-btn @click="transposeTable()">Транспонировать таблицу</v-btn>
+=======
+  <div v-if="this.$store.getters.COl_MEASURE.length || this.$store.getters.ROW_MEASURE.length">
+    <v-select
+        v-model="rowsInPage"
+        :items="[10, 20, 50, 100, 200]"
+        class="select-rows-count"
+        hide-details="true"
+        label="Строк на странице"
+        variant="underlined"/>
+    <v-select
+        v-model="columnsInPage"
+        :items="[1, 2, 5, 10, 20]"
+        class="select-rows-count"
+        hide-details="true"
+        label="Столбцов на странице"
+        variant="underlined"/>
+    <h3>Страница:
+      <input
+          v-model="currentPageNumber"
+          :max="pageCount"
+          class="table-toolbar__input"
+          min="1"
+          type="number"
+          @change="getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.columnsInPage, this.columnsInPage)"/>
+      из {{ pageCount }}
+    </h3>
+    <div class="table-toolbar">
+      <v-btn class="table-toolbar__btn" @click="prevColPage">
+        <v-icon
+            icon="mdi-menu-left-outline"
+        />
+      </v-btn>
+      <v-btn class="table-toolbar__btn" @click="prevPage">
+        <v-icon
+            icon="mdi-menu-up-outline"
+        />
+      </v-btn>
+      <v-btn class="table-toolbar__btn" @click="nextPage">
+        <v-icon
+            icon="mdi-menu-down-outline"
+        />
+      </v-btn>
+      <v-btn class="table-toolbar__btn" @click="nextColPage">
+        <v-icon
+            icon="mdi-menu-right-outline"
+        />
+      </v-btn>
+      <v-btn @click="transposeTable()">Транспонировать таблицу</v-btn>
+>>>>>>> Stashed changes
 
-  </div>
-  <v-table v-if="table_data && OPAL_data">
-    <thead>
-    <tr>
-      <!-- Сам доволен, что до такого лаконичного решения допер.
-       Но мне кажется, что с этим костылем будет много багов...
-       -->
-      <template v-if=" (returnCubeRequest().rowFields.length > returnCubeRequest().columnFields.length) && returnCubeRequest().columnFields.length">
-        <th v-for="n in returnCubeRequest().rowFields.length - returnCubeRequest().columnFields.length"></th>
-      </template>
-
-      <template v-for="headerCubeRequest in returnCubeRequest().columnFields">
-        <th>{{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}</th>
-        <template v-for="columnValue in OPAL_data.data.columnValues">
-          <th :colspan="returnCubeRequest().metrics.length">{{ columnValue[0] }}</th>
-        </template>
-      </template>
-    </tr>
-    <tr>
-      <template v-for="headerCubeRequest in returnCubeRequest().rowFields">
-        <th>{{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}</th>
-      </template>
-      <template v-for="columnValue in OPAL_data.data.columnValues">
-        <template v-for="headerCubeRequest in returnCubeRequest().metrics">
-          <th>{{ table_data.data.fields.find(item => item.id === headerCubeRequest.field.fieldId).name }}
-            {{ headerCubeRequest.aggregationType }}
-          </th>
-        </template>
-      </template>
-    </tr>
-    <template v-for="(rowValue, index) in OPAL_data.data.rowValues">
+    </div>
+    <v-table v-if="table_data && OPAL_data">
+      <thead>
       <tr>
-        <template v-for="n in rowValue.length">
-          <th>{{ rowValue[n - 1] }}</th>
+        <!-- Сам доволен, что до такого лаконичного решения допер.
+         Но мне кажется, что с этим костылем будет много багов...
+         -->
+        <template v-if=" (returnCubeRequest().rowFields.length > returnCubeRequest().columnFields.length) && returnCubeRequest().columnFields.length">
+          <th v-for="n in returnCubeRequest().rowFields.length - returnCubeRequest().columnFields.length"></th>
         </template>
 
-        <template v-if="OPAL_data.data.metricValues">
-          <template v-for="n in OPAL_data.data.metricValues.length">
-            <template v-for="elem in OPAL_data.data.metricValues[n-1].values">
-              <th>{{ elem[index] }}</th>
-            </template>
+        <template v-for="headerCubeRequest in returnCubeRequest().columnFields">
+          <th style="background-color: #f38297; color: white;">{{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}</th>
+          <template class="table-header" v-for="columnValue in OPAL_data.data.columnValues">
+            <th style="background-color: #f38297; color: white;" :colspan="returnCubeRequest().metrics.length">{{ columnValue[0] }}</th>
           </template>
         </template>
       </tr>
-    </template>
-    </thead>
-  </v-table>
+      <tr>
+        <template v-for="headerCubeRequest in returnCubeRequest().rowFields">
+          <th style="background-color: #f38297; color: white;">{{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}</th>
+        </template>
+        <template v-for="columnValue in OPAL_data.data.columnValues">
+          <template v-for="headerCubeRequest in returnCubeRequest().metrics">
+            <th style="background-color: #f38297; color: white;">{{ table_data.data.fields.find(item => item.id === headerCubeRequest.field.fieldId).name }}
+              {{ headerCubeRequest.aggregationType }}
+            </th>
+          </template>
+        </template>
+      </tr>
+      <template v-for="(rowValue, index) in OPAL_data.data.rowValues">
+        <tr>
+          <template v-for="n in rowValue.length">
+            <th style="background-color: #f38297; color: white;">{{ rowValue[n - 1] }}</th>
+          </template>
+
+          <template v-if="OPAL_data.data.metricValues">
+            <template v-for="n in OPAL_data.data.metricValues.length">
+              <template v-for="elem in OPAL_data.data.metricValues[n-1].values">
+                <th >{{ elem[index] }}</th>
+              </template>
+            </template>
+          </template>
+        </tr>
+      </template>
+      </thead>
+    </v-table>
+  </div>
 </template>
 
 <script>
@@ -167,7 +217,11 @@ export default {
       }
     },
     prevColPage(){
+<<<<<<< Updated upstream
     	if (this.currentPageColNumber > 1) {
+=======
+      if (this.currentPageColNumber > 1) {
+>>>>>>> Stashed changes
         this.currentPageColNumber--;
         this.from_columns = (this.currentPageColNumber - 1) * this.columnsInPage;
         this.count_columns = this.columnsInPage;
@@ -199,14 +253,22 @@ export default {
       }
     },
     // Передаем из data значения в качестве параметров по умолчанию
+<<<<<<< Updated upstream
     returnCubeRequest(from_rows = this.from_rows, count_rows = this.count_rows, from_columms = this.from_columns, count_columns = this.count_columns) {
+=======
+    returnCubeRequest(from_rows = this.from_rows, count_rows = this.count_rows, from_columns = this.from_columns, count_columns = this.count_columns) {
+>>>>>>> Stashed changes
       return {
         "jobId": 85,
         "columnFields": this.$store.getters.COl_MEASURE,
         "rowFields": this.$store.getters.ROW_MEASURE,
         "metrics": this.$store.getters.METRICS,
         "columnsInterval": {
+<<<<<<< Updated upstream
           "from": from_columms,
+=======
+          "from": from_columns,
+>>>>>>> Stashed changes
           "count": count_columns
         },
         "rowsInterval": {
@@ -242,16 +304,46 @@ export default {
   },
   watch: {
     rowsInPage() {
+<<<<<<< Updated upstream
     	this.currentPageNumber = 1;
       this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
     },
     columnsInPage(){
     	this.currentPageColNumber = 1;
     	this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
+=======
+      this.currentPageNumber = 1;
+      this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
+    },
+    columnsInPage(){
+      this.currentPageColNumber = 1;
+      this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
+>>>>>>> Stashed changes
     },
     '$store.getters.ROW_MEASURE': {
       handler() {
         this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
+<<<<<<< Updated upstream
+=======
+      },
+      deep: true
+    },
+    '$store.getters.COL_MEASURE': {
+      handler() {
+        this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
+      },
+      deep: true
+    },
+    '$store.getters.METRICS': {
+      handler() {
+        this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
+      },
+      deep: true
+    },
+    '$store.getters.FILTER_LIST': {
+      handler() {
+        this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
+>>>>>>> Stashed changes
       },
       deep: true
     }
@@ -280,8 +372,13 @@ export default {
 }
 
 .select-rows-count {
+<<<<<<< Updated upstream
 	margin: 10px;
 	display: inline-block;
+=======
+  margin: 10px;
+  display: inline-block;
+>>>>>>> Stashed changes
   width: 150px;
 }
 .v-table {

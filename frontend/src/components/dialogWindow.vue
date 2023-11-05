@@ -12,10 +12,11 @@
           :items="selectOptions"
       v-model="selectedOption"
       ></v-select>
-      <v-spacer></v-spacer>
-      <v-select v-if="selectedOption === 'Метрика'"
-      :items="metricOption"
-      v-model="selectedMetricOption"></v-select>
+    </v-card-actions>
+    <v-card-actions v-if="selectedOption === 'Метрика'">
+      <v-select
+                :items="metricOption"
+                v-model="selectedMetricOption"></v-select>
     </v-card-actions>
     <v-btn @click="addElement">Подтвердить</v-btn>
   </v-card>
