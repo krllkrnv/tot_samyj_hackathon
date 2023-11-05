@@ -5,8 +5,43 @@
 
     >
       <v-card-title>{{metaData.find(item => item.id === elem.field.fieldId).name}} {{elem.aggregationType}}</v-card-title>
+
       <v-card-actions>
-        <v-btn @click="this.$store.commit('DELETE_METRIC', elem.field.fieldId)" color="error" variant="tonal">Удалить</v-btn>      </v-card-actions>
+        <v-dialog
+            v-model="showDialog">
+          <v-card width="500" class="align-self-center">
+            <v-card-title class="text-center">Добавление фильтра</v-card-title>
+            <v-select
+                label="Выберите фильтр"
+                :items="filterOption"
+                v-model="selectedOption">
+            </v-select>
+            <v-text-field
+                v-if="selectedOption"
+                v-model="filterValue"
+                hide-details
+                label="Введите значение"
+                type="number"
+            />
+            <v-btn
+                @click="this.$store.commit('ADD_FILTER', {
+              filterType: selectedOption,
+              invertResult: false,
+              metricId: metrics.findIndex(item => item.field.fieldId === pickedElement.field.fieldId),
+              rounding: 0,
+              values: [filterValue]
+            }); console.log(this.$store.getters.FILTERS_LIST)"
+                v-if="selectedOption">
+              Подтвердить
+            </v-btn>
+          </v-card>
+        </v-dialog>
+        <v-btn @click="this.$store.commit('DELETE_METRIC', elem.field.fieldId)" color="error" variant="tonal">Удалить</v-btn>
+        <v-btn
+        @click="showDialog = !showDialog; pickedElement = elem; console.log(pickedElement)"
+
+        >Добавить фильтр</v-btn>
+      </v-card-actions>
     </v-card>
   </v-card>
 </template>
@@ -15,6 +50,15 @@
 import {mapGetters} from "vuex";
 
 export default {
+  data(){
+    return{
+      selectedOption: null,
+      filterOption: ['EQUALS', 'GREATER', 'LESSER', 'GREATER_OR_EQUALS', 'LESSER_OR_EQUALS'],
+    showDialog: false,
+      pickedElement: null,
+      filterValue: null
+  }
+  },
 computed: {
   ...mapGetters(['METRICS', 'META_DATA']),
   metrics(){
@@ -23,7 +67,12 @@ computed: {
   metaData(){
     return this.META_DATA
   }
-}
+},
+  methods: {
+    addFilter(){
+
+    }
+  }
 }
 </script>
 

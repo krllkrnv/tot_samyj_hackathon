@@ -3,7 +3,7 @@
     <v-card v-for="elem in colData"
             class="v-card-element ma-5" width="100%" variant="tonal"
             max-width="500"
-    >{{elem}}
+    >
       <v-card-title>{{metaData.find(item => item.id === elem.fieldId).name}}</v-card-title>
       <v-card-actions>
         <v-btn @click="this.$store.commit('DELETE_COL_MEASURE', elem.fieldId)" color="error" variant="tonal">Удалить</v-btn>
