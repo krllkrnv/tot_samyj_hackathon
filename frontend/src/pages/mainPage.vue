@@ -4,7 +4,7 @@
   <row-measure/>
   <metrics-list/>
   <filters-list/>
-  <div v-if="this.$store.getters.COl_MEASURE.length || this.$store.getters.ROW_MEASURE.length">
+  <div v-if="this.$store.getters.COl_MEASURE.length || this.$store.getters.ROW_MEASURE.length || this.$store.getters.METRICS.length">
     <v-select
         v-model="rowsInPage"
         :items="[10, 20, 50, 100, 200]"
@@ -53,13 +53,15 @@
       <v-btn @click="transposeTable()">Транспонировать таблицу</v-btn>
       <v-card v-if="stateColumnSort[0]">
         <v-card-title class="text-h5">Сортировка</v-card-title>
-        <v-card-title>Метрика: {{table_data.data.fields[table_data.data.fields.findIndex(item => item.id === stateMetrics[stateColumnSort[0].metricId].field.fieldId)].name}}
+        <v-card-title>Метрика:
+          {{ table_data.data.fields[table_data.data.fields.findIndex(item => item.id === stateMetrics[stateColumnSort[0].metricId].field.fieldId)].name }}
           <br>
-          Порядок сортировки: {{stateColumnSort[0].order}}
+          Порядок сортировки: {{ stateColumnSort[0].order }}
           <br>
-          Значение измерения: {{stateColumnSort[0].tuple[0]}}</v-card-title>
+          Значение измерения: {{ stateColumnSort[0].tuple[0] }}
+        </v-card-title>
 
-          <v-btn width="100" @click="this.$store.commit('DELETE_COLUMN_SORT')" class="table-toolbar__btn">Удалить</v-btn>
+        <v-btn class="table-toolbar__btn" width="100" @click="this.$store.commit('DELETE_COLUMN_SORT')">Удалить</v-btn>
 
       </v-card>
     </div>
@@ -69,29 +71,41 @@
         <!-- Сам доволен, что до такого лаконичного решения допер.
          Но мне кажется, что с этим костылем будет много багов...
          -->
-        <template v-if=" (returnCubeRequest().rowFields.length > returnCubeRequest().columnFields.length) && returnCubeRequest().columnFields.length">
+        <template
+            v-if=" (returnCubeRequest().rowFields.length > returnCubeRequest().columnFields.length) && returnCubeRequest().columnFields.length">
           <th v-for="n in returnCubeRequest().rowFields.length - returnCubeRequest().columnFields.length"></th>
         </template>
 
         <template v-for="headerCubeRequest in returnCubeRequest().columnFields">
-          <th style="background-color: #f38297; color: white;">{{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}</th>
-          <template class="table-header" v-for="columnValue in OPAL_data.data.columnValues">
-            <th style="background-color: #f38297; color: white;" :colspan="returnCubeRequest().metrics.length">{{ columnValue[0] }}</th>
+          <th style="background-color: #f38297; color: white;">
+            {{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}
+          </th>
+          <template v-for="columnValue in OPAL_data.data.columnValues" class="table-header">
+            <th :colspan="returnCubeRequest().metrics.length" style="background-color: #f38297; color: white;">
+              {{ columnValue[0] }}
+            </th>
           </template>
         </template>
       </tr>
       <tr>
         <template v-for="headerCubeRequest in returnCubeRequest().rowFields">
-          <th style="background-color: #f38297; color: white;">{{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}</th>
+          <th style="background-color: #f38297; color: white;">
+            {{ table_data.data.fields.find(item => item.id === headerCubeRequest.fieldId).name }}
+          </th>
         </template>
         <template v-for="columnValue in OPAL_data.data.columnValues">
           <template v-for="headerCubeRequest in returnCubeRequest().metrics">
             <th
-                style="background-color: #f38297; color: white;">{{ table_data.data.fields.find(item => item.id === headerCubeRequest.field.fieldId).name }}
+                style="background-color: #f38297; color: white;">
+              {{ table_data.data.fields.find(item => item.id === headerCubeRequest.field.fieldId).name }}
               {{ headerCubeRequest.aggregationType }}
               <div class="cell-btn">
-                <v-btn @click="addSort(stateMetrics.findIndex(item => item.field.fieldId === headerCubeRequest.field.fieldId), columnValue[0], 'Descending')" class="ma-1" icon="mdi: mdi-arrow-down"></v-btn>
-                <v-btn @click="addSort(stateMetrics.findIndex(item => item.field.fieldId === headerCubeRequest.field.fieldId), columnValue[0], 'Ascending')" class="ma-1" icon="mdi: mdi-arrow-up"></v-btn>
+                <v-btn
+                    class="ma-1"
+                    icon="mdi: mdi-arrow-down" @click="addSort(stateMetrics.findIndex(item => item.field.fieldId === headerCubeRequest.field.fieldId), columnValue[0], 'Descending')"></v-btn>
+                <v-btn
+                    class="ma-1"
+                    icon="mdi: mdi-arrow-up" @click="addSort(stateMetrics.findIndex(item => item.field.fieldId === headerCubeRequest.field.fieldId), columnValue[0], 'Ascending')"></v-btn>
               </div>
             </th>
           </template>
@@ -106,7 +120,7 @@
           <template v-if="OPAL_data.data.metricValues">
             <template v-for="n in OPAL_data.data.metricValues.length">
               <template v-for="elem in OPAL_data.data.metricValues[n-1].values">
-                <th >{{ elem[index] }}</th>
+                <th>{{ elem[index] }}</th>
               </template>
             </template>
           </template>
@@ -186,7 +200,7 @@ export default {
 
       }
     },
-    prevColPage(){
+    prevColPage() {
       if (this.currentPageColNumber > 1) {
         this.currentPageColNumber--;
         this.from_columns = (this.currentPageColNumber - 1) * this.columnsInPage;
@@ -270,10 +284,10 @@ export default {
         return Math.ceil(this.OPAL_data.data.totalRows / this.rowsInPage);
       }
     },
-    stateMetrics(){
+    stateMetrics() {
       return this.$store.getters.METRICS
     },
-    stateColumnSort(){
+    stateColumnSort() {
       return this.$store.getters.COLUMN_SORT
     }
   },
@@ -282,7 +296,7 @@ export default {
       this.currentPageNumber = 1;
       this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
     },
-    columnsInPage(){
+    columnsInPage() {
       this.currentPageColNumber = 1;
       this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
     },
@@ -327,10 +341,12 @@ export default {
   cursor: pointer; /* Измените курсор мыши на указатель, чтобы указать на интерактивность */
 
 }
-.cell-btn{
+
+.cell-btn {
   display: flex;
   flex-direction: row;
 }
+
 .table-toolbar__btn {
   margin: 5px;
   height: 40px;
@@ -346,6 +362,7 @@ export default {
   display: inline-block;
   width: 150px;
 }
+
 .v-table {
   border: 1px solid #ccc;
   border-collapse: collapse;
@@ -353,6 +370,7 @@ export default {
   padding: 0;
   table-layout: fixed;
 }
+
 th, td {
   border: 1px solid rgba(121, 77, 77, 0.81);
 }
