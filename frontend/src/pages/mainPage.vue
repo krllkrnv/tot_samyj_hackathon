@@ -51,7 +51,17 @@
         />
       </v-btn>
       <v-btn @click="transposeTable()">Транспонировать таблицу</v-btn>
+      <v-card v-if="stateColumnSort[0]">
+        <v-card-title class="text-h5">Сортировка</v-card-title>
+        <v-card-title>Метрика: {{table_data.data.fields[table_data.data.fields.findIndex(item => item.id === stateMetrics[stateColumnSort[0].metricId].field.fieldId)].name}}
+          <br>
+          Порядок сортировки: {{stateColumnSort[0].order}}
+          <br>
+          Значение измерения: {{stateColumnSort[0].tuple[0]}}</v-card-title>
 
+          <v-btn width="100" @click="this.$store.commit('DELETE_COLUMN_SORT')" class="table-toolbar__btn">Удалить</v-btn>
+
+      </v-card>
     </div>
     <v-table v-if="table_data && OPAL_data">
       <thead>
@@ -76,8 +86,13 @@
         </template>
         <template v-for="columnValue in OPAL_data.data.columnValues">
           <template v-for="headerCubeRequest in returnCubeRequest().metrics">
-            <th style="background-color: #f38297; color: white;">{{ table_data.data.fields.find(item => item.id === headerCubeRequest.field.fieldId).name }}
+            <th
+                style="background-color: #f38297; color: white;">{{ table_data.data.fields.find(item => item.id === headerCubeRequest.field.fieldId).name }}
               {{ headerCubeRequest.aggregationType }}
+              <div class="cell-btn">
+                <v-btn @click="addSort(stateMetrics.findIndex(item => item.field.fieldId === headerCubeRequest.field.fieldId), columnValue[0], 'Descending')" class="ma-1" icon="mdi: mdi-arrow-down"></v-btn>
+                <v-btn @click="addSort(stateMetrics.findIndex(item => item.field.fieldId === headerCubeRequest.field.fieldId), columnValue[0], 'Ascending')" class="ma-1" icon="mdi: mdi-arrow-up"></v-btn>
+              </div>
             </th>
           </template>
         </template>
@@ -99,6 +114,12 @@
       </template>
       </thead>
     </v-table>
+  </div>
+  <div v-else>
+    <v-card-title class="text-center">
+      <br>
+      Таблица пуста. Укажите измерения по столбцам или по строкам.
+    </v-card-title>
   </div>
 </template>
 
@@ -212,6 +233,7 @@ export default {
           "from": from_rows,
           "count": count_rows
         },
+        "columnSort": this.$store.getters.COLUMN_SORT,
         "filterGroup": {
           "childGroups": [],
           "filters": [],
@@ -230,13 +252,29 @@ export default {
       let bufferVariable = this.$store.getters.COl_MEASURE
       this.$store.commit('SET_COL_MEASURES', this.$store.getters.ROW_MEASURE)
       this.$store.commit('SET_ROW_MEASURES', bufferVariable)
-    }
+    },
+    addSort(metricId, tuple, order) {
+      this.$store.commit('SET_COLUMN_SORT', {
+        metricId: metricId,
+        order: order,
+        tuple: [
+          tuple
+        ]
+      })
+      console.log(this.$store.getters.COLUMN_SORT)
+    },
   },
   computed: {
     pageCount() {
       if (this.OPAL_data) {
         return Math.ceil(this.OPAL_data.data.totalRows / this.rowsInPage);
       }
+    },
+    stateMetrics(){
+      return this.$store.getters.METRICS
+    },
+    stateColumnSort(){
+      return this.$store.getters.COLUMN_SORT
     }
   },
   watch: {
@@ -271,6 +309,12 @@ export default {
         this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
       },
       deep: true
+    },
+    '$store.getters.COLUMN_SORT': {
+      handler() {
+        this.getCube((this.currentPageNumber - 1) * this.rowsInPage, this.rowsInPage, (this.currentPageColNumber - 1) * this.rowsInPage, this.columnsInPage);
+      },
+      deep: true
     }
   },
 
@@ -283,9 +327,10 @@ export default {
   cursor: pointer; /* Измените курсор мыши на указатель, чтобы указать на интерактивность */
 
 }
-
-
-
+.cell-btn{
+  display: flex;
+  flex-direction: row;
+}
 .table-toolbar__btn {
   margin: 5px;
   height: 40px;

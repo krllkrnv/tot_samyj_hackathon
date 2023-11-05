@@ -1,17 +1,19 @@
 <template>
-  <v-card variant="text">
-    <v-card-title>Метаданные</v-card-title>
-    <v-dialog v-model="dialog" width="auto">
-      <dialog-window :meta-element="pickedElement" />
-    </v-dialog>
-    <v-row class="pa-2">
-      <v-col v-for="(elem, index) in metaData" :key="index" cols="2" sm="6" md="4" lg="3">
-          <v-card  @click="pickedElement = elem; dialog = !dialog" class="v-card-element ma-2 pa-2 rounded-lg" elevation="1"  variant="tonal">
-            <v-card-title>{{ elem.name }}</v-card-title>
-          </v-card>
-      </v-col>
-    </v-row>
-  </v-card>
+  <v-card-title>Метаданные</v-card-title>
+  <v-dialog
+      v-model="dialog"
+      width="auto"
+  ><dialog-window
+      :meta-element="pickedElement"
+      @close="dialog = !dialog"
+  /></v-dialog>
+  <div class="pa-5 item-list">
+    <v-card
+        v-for="(elem, index) in metaData"
+        @click="pickedElement = elem; dialog = !dialog" class="v-card-element ma-2 pa-2 rounded-lg" elevation="1"  variant="tonal">
+      {{elem.name}}
+    </v-card>
+  </div>
 </template>
 
 <script>
@@ -61,6 +63,13 @@ export default {
 .main-table th {
   background-color: #f2f2f2;
 }
+
+.item-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
 
 @media (max-width: 600px) {
   .main-table table {

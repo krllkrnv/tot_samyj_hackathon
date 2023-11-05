@@ -6,7 +6,9 @@ export default createStore({
         STATE_ROW_MEASURE: [],
         STATE_COL_MEASURE: [],
         STATE_METRICS: [],
-        STATE_FILTERS: []
+        STATE_FILTERS: [],
+        STATE_COLUMN_SORT: [],
+        STATE_ROW_SORT: []
     },
     getters: {
         META_DATA: state => {
@@ -23,6 +25,12 @@ export default createStore({
         },
         FILTERS_LIST: state => {
             return state.STATE_FILTERS
+        },
+        COLUMN_SORT: state => {
+            return state.STATE_COLUMN_SORT
+        },
+        ROW_SORT: state => {
+            return state.STATE_ROW_SORT
         }
     },
     mutations: {
@@ -34,6 +42,12 @@ export default createStore({
         },
         SET_COL_MEASURES: (state, payload) => {
             state.STATE_COL_MEASURE = payload
+        },
+        SET_COLUMN_SORT: (state, payload) => {
+            state.STATE_COLUMN_SORT = [payload]
+        },
+        SET_ROW_SORT: (state, payload) => {
+            state.STATE_ROW_SORT = [payload]
         },
         ADD_ROW_MEASURE: (state, payload) => {
             state.STATE_ROW_MEASURE.push(payload)
@@ -58,6 +72,9 @@ export default createStore({
         },
         DELETE_FILTER: (state, payload) => {
             state.STATE_FILTERS = state.STATE_FILTERS.filter(item => item.metricId !== payload)
+        },
+        DELETE_COLUMN_SORT: (state) => {
+            state.STATE_COLUMN_SORT = []
         }
     }
 })
